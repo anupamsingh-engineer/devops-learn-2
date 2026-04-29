@@ -73,13 +73,20 @@ jobs:
           EC2_APP_DIR: ${{ secrets.EC2_APP_DIR }}
         run: |
           ssh -i ec2_key.pem ${EC2_USER}@${EC2_HOST} << EOF
-            set -e
+             set -e
             cd "${EC2_APP_DIR}"
 
             git fetch --all
             git reset --hard origin/main
 
-            docker compose down
+            # 💥 remove rogue containers (important)
+            docker rm -f backend || true
+            docker rm -f frontend || true
+
+            # optional but powerful: remove all orphan containers
+            docker container prune -f
+
+            docker compose down --remove-orphans
 
             docker compose up -d --build
 

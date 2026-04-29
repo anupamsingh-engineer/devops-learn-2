@@ -16,9 +16,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
+app.get('/', (req, res) => {
+  res.status(200).json({ message: 'Server is running!' });
 app.use('/api/tasks', taskRoutes);
 
 // Health check endpoint
+});
 app.get('/health', (req, res) => {
   res.status(200).json({ message: 'Server is running!' });
 });
